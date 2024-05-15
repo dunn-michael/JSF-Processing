@@ -33,8 +33,8 @@ with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m
     # print(ping_count)
     for i in range(ping_count):
         # go to the offset of the current ping
-        # f.seek(first_ping_offset + i * ping_struct.size)
-
+        f.seek(first_ping_offset + i * ping_struct.size)
+        
         # read the ping
         ping = f.read(ping_struct.size)
         ping_number, ping_seconds, ping_microseconds, sonar_x, sonar_y, \
@@ -44,14 +44,17 @@ with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m
         print(i)
         # process the ping data
         # ...
+        # TODO
+        # Once order of data is figured out need to figure out how to graph the data in 2D first then in 3D
+        
         # print(f"{sonar_x}, {sonar_y}, {sonar_depth} \n\n")
-        if sonar_x == 0:
-            theta = math.atan(0)
-        else:
-            theta = math.atan(sonar_y / sonar_x)
-        r = math.sqrt(sonar_x ** 2 * sonar_y **2)
-        x_coords.append(r)
-        y_coords.append(theta)
+        # if sonar_x == 0:
+        #     theta = math.atan(0)
+        # else:
+        #     theta = math.atan(sonar_y / sonar_x)
+        # r = math.sqrt(sonar_x ** 2 * sonar_y **2)
+        # x_coords.append(r)
+        # y_coords.append(theta)
 
 
 # # Creating data
