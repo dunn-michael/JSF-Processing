@@ -17,10 +17,8 @@ header_struct = struct.Struct('<hbbhbbbbhl')
 ping_struct = struct.Struct('<IIfiiiihhhhhhhhhh')
 def current():
     counter = 0
-    # message_type = b'\x80'
-    # message_type = b'\x1601'
-    message_type1 = b'\x01'
-    message_type2 = b'\x16'
+    message_type2 = b'\x80'
+    message_type = b'\x01\x16'
 
 
     directory = 'Immerse/SideScan 0/'
@@ -29,18 +27,22 @@ def current():
             with open(os.path.join(directory, filename), 'rb') as f:
                 header = f.read()
                 for i in range(len(header)):
-                    if header[i:i+1] == message_type2: # For 1601
-                        if header[i:i+1] == message_type1:
+                    # if i < 100000:
+                    #     print(header[i:i+2])
+                    # if i < 100000:
+                    #     # print(header[i:i+10])
+                    #     print(hex(header[i]))
+                    if header[i:i+2] == message_type: # For 1601
                     # if header[i:i+1] == message_type:
 
-                        # print(header[i:i+1])
+                        print(header[i:i+2])
                         # if i < 100000:
-                            # print(header[i-10:i])
+                        #     # print(header[i:i+10])
+                        #     print(header[i])
                             # print(header[i-10:i+5])
-                            
-                            print(header[i:i+20])
-                            # marker = i
-                            counter +=1
+                        # print(header[i:i+10])
+                        # marker = i
+                        counter +=1
                 print(counter)
 
     # with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m_kuleana_spot_1-IVER3-3099_WP9.JSF', 'rb') as f:
