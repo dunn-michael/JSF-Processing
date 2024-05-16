@@ -3,7 +3,7 @@ import struct
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-import math
+import os
 
 x_coords = []
 y_coords = []
@@ -17,18 +17,47 @@ header_struct = struct.Struct('<hbbhbbbbhl')
 ping_struct = struct.Struct('<IIfiiiihhhhhhhhhh')
 def current():
     counter = 0
-    message_type = b'\x80'
-    message_type = b'\x1601'
-    # open the file in binary mode
-    with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m_kuleana_spot_1-IVER3-3099_WP9.JSF', 'rb') as f:
-        # read the header
-        header = f.read()
-        for i in range(len(header)):
-            if header[i:i+3] == message_type:
-                print(header[i:i+3])
-                # marker = i
-                counter +=1
-        print(counter)
+    # message_type = b'\x80'
+    # message_type = b'\x1601'
+    message_type1 = b'\x01'
+    message_type2 = b'\x16'
+
+
+    directory = 'Immerse/SideScan 0/'
+    for filename in os.listdir(directory):
+        if filename.endswith('.JSF'):
+            with open(os.path.join(directory, filename), 'rb') as f:
+                header = f.read()
+                for i in range(len(header)):
+                    if header[i:i+1] == message_type2: # For 1601
+                        if header[i:i+1] == message_type1:
+                    # if header[i:i+1] == message_type:
+
+                        # print(header[i:i+1])
+                        # if i < 100000:
+                            # print(header[i-10:i])
+                            # print(header[i-10:i+5])
+                            
+                            print(header[i:i+20])
+                            # marker = i
+                            counter +=1
+                print(counter)
+
+    # with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m_kuleana_spot_1-IVER3-3099_WP9.JSF', 'rb') as f:
+        # header = f.read()
+        # for i in range(len(header)):
+        #     if header[i:i+3] == message_type: # For 1601
+        #     # if header[i:i+1] == message_type:
+
+        #         # print(header[i:i+1])
+        #         # if i < 100000:
+        #             # print(header[i-10:i])
+        #             # print(header[i-10:i+5])
+                    
+        #         print(header[i:i+20])
+        #         # marker = i
+        #         counter +=1
+        # print(counter)
         # marker, B2, B3, messageType, B6, B7, B8, B9, reserved, messageSize = header_struct.unpack(header)
         # print(hex(marker))
         # print(hex(messageType))
