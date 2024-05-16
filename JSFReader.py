@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 # All data included in the header. Channel says if data is port or starboard, 0 port, 1 starboard
-marker = protocalVersion = sessionID = messageType = cmdType = subSysNum = channel = seqNum = reserved = msgSize = b'0'
+marker = protocalVersion = sessionID = messageType = cmdType = subSysNum = channel = seqNum = reserved = msgSize = b'\x00'
 # 0-1          2               3           4-5          6          7          8         9       10-11      12-15    
 
 x_coords = []
@@ -22,10 +22,11 @@ ping_struct = struct.Struct('<IIfiiiihhhhhhhhhh')
 def current():
     counter = 0
     marker = b'\x1601'
-    # message_type = b'\x80'
+    msgType = hex(128)
+    marker = b'\x80'
 
 # header_struct.unpack(header)
-    directory = 'Immerse/SideScan 0/'
+    directory = 'Immerse/Sidescans/SideScan 0/'
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
             with open(os.path.join(directory, filename), 'rb') as f:
@@ -33,13 +34,13 @@ def current():
                 for i in range(len(header)):
                     if header[i:i+3] == marker: # For 1601
                         # print(header[i:i+2])
-                        print(hex(header[i:i+15]))
+                        print(header[i:i+15])
+                        # if msgType in header[i:i+10]:
                         if b'\x80' in header[i:i+10]:
-                            if i < 1000000:
-                                print("WORKED")
-                                print(header[i:i+10])
-                        counter +=1
-                # print(counter)
+                            print("WORKED")
+                            print(header[i:i+10])
+                            counter +=1
+                print(counter)
 
     # with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m_kuleana_spot_1-IVER3-3099_WP9.JSF', 'rb') as f:
         # header = f.read()
@@ -116,34 +117,6 @@ def current():
 
     # # # Displaying the plot
     # # plt.show()
-
-
-def old():
-    counter = 0
-    # Open the JSF file in binary mode
-    with open('Immerse/SideScan 0/20240416-201317-UTC_0-2024-04-16_oahu_kohola_HFB5m_kuleana_spot_1-IVER3-3099_WP0.JSF', 'rb') as file:
-        # Read the binary data
-        binary_data = file.read()
-
-        # Define the message type to search for (0x80 in hexadecimal)
-        message_type = b'\x80'
-
-        # Find all occurrences of the message type in the binary data
-        message_indices = [i for i in range(len(binary_data)) if binary_data[i:i+1] == message_type]
-        print("test")
-        # Extract data for each message of type 0x80
-        for index in message_indices:
-            # Assuming the data follows the message type and has a fixed length of 4 bytes
-            data_start_index = index + 0
-            data_end_index = data_start_index + 0
-            message_data = binary_data[data_start_index:data_end_index]
-
-            # Process the extracted data (e.g., convert bytes to integer)
-            # You may need to adjust the data processing based on the actual format of the data
-            data_value = int.from_bytes(message_data, byteorder='big')  # Convert bytes to integer
-            print(f"Data for message type 0x80: {hex(data_value)}")
-            counter +=1
-            print(counter)
 
 
 def main():
