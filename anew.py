@@ -29,7 +29,8 @@ data_struct = struct.Struct('HBBHBBBBHiiIIhhHHHhhhhHHhhhhhffhhhhhhhhhhhhfiih')
 
 
 def f(x, y):
-    return np.sin(x) ** 10 + np.cos(10 + y * x) * np.cos(x)
+    # return np.sin(x) ** 10 + np.cos(10 + y * x) * np.cos(x)
+    return np.sin(x) * np.cos(y)
 
 
 def graph(long, lat):
@@ -44,11 +45,16 @@ def graph(long, lat):
     X, Y = np.meshgrid(x, y)
     Z = f(X, Y)
     
-    plt.contour( X, Y, Z, colors=['#808080', '#A0A0A0'], extend='both' )
+    cont = plt.contour(X, Y, Z, cmap='copper', extend='both' )
 
-    plt.colorbar()
-    plt.show()
-    print("FINISHED")
+
+    c = plt.imshow(cont, cmap ='copper') 
+    plt.colorbar(c) 
+
+    plt.show() 
+    # plt.colorbar()
+    # plt.show()
+    # print("FINISHED")
 
 
 
@@ -56,8 +62,12 @@ def graph(long, lat):
 def main():
     x = []
     y = []
+    output = ''
+    while(output != 'Y' and output != 'N'):
+        output = str(input("Would you like to print the outputs? (Y/N) : ")).upper()
     # Goes through your directory to find files
-    directory = 'Sidescans/'
+    # directory = 'Sidescans/'
+    directory = 'JSF-Processing/Sidescans'
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
             with open(os.path.join(directory, filename), 'rb') as f:
@@ -66,12 +76,6 @@ def main():
                 test = f.read()
                 for i in range(len(test)):
 
-                    # Doesn't work but will eventually check how many bytes
-                    # are left and move on to the next file isntead
-                    # of just crashing
-                    # if (len(test) - i -1)  < header_struct.size:
-                    #     break
-
                     # This is here for testing to speed up tests
                     # f.seek(0 + i * data_struct.size)
 
@@ -79,7 +83,7 @@ def main():
                     f.seek(i)
                     
                     # This takes the data from the file and only gathers the amount that it will to fill the variables
-                    if i < 10000000:
+                    if i < 164051262:
                         header = f.read(data_struct.size)
 
                         # Takes the data out and assigns it to each variable. This corresponds to the
@@ -100,16 +104,20 @@ def main():
                                     # pass
                                     if ID == 1:
                                         if(channel == 1):
-                                            side = "Starboard"
+                                            side = "Starboard / Right"
+                                            x.append(longitude)
+                                            y.append(latitude)
                                         elif channel == 0:
-                                            side = "Port"
+                                            side = "Port / Left"
                                         else:
                                             side = "INVALID"
                                         # This is just here for testing so I can see the values. Later this will be a graph
-                                        print(f"\n\nMarker:{hex(marker)} MSGTYPE:{messageType} Channel:{channel} Side:{side} ")
-                                        print(f"Longitude:{longitude} Latitude{latitude} coordUnit:{coordUnits} ID:{ID}")
-                                        x.append(longitude)
-                                        y.append(latitude)
+                                        if(output == 'Y'):
+                                            print(f"\n\nMarker:{hex(marker)} MSGTYPE:{messageType} Channel:{channel} Side:{side} ")
+                                            print(f"Longitude:{longitude} Latitude{latitude} coordUnit:{coordUnits} ID:{ID}")
+                                            print(f"Validity Flag:{bin(validityFlag)}")
+                                        # x.append(longitude)
+                                        # y.append(latitude)
                                         sensorCount += 1
                     else:
                         print(f"Total Sensor Measurements : {sensorCount}")
@@ -118,3 +126,18 @@ def main():
     f.close()
 
 main()
+
+
+# TODO
+# Write code that checks the size of the file and stops unpacking data before it crashes
+# and exits the for loop so it can move onto the next file
+
+# Make the countour plot 3D
+
+# Compare the plots to the processed data to ensure accuracy
+
+# Export the processed images as their own files that can be shared or used for other programs
+
+# Add Error Checking?
+
+# Add function that opens up file explorer so you choose the folder to go through instead of being predeclared
