@@ -34,38 +34,28 @@ def f(x, y):
     return np.sin(x) * np.cos(y)
 
 
-def graph(long, lat, depth, indexing="xy"):
+def graph(long, lat, depth):
     # x = np.linspace(long)
     # y = np.linspace(lat)
     x = long
     y = lat
+    z = depth
     # x = np.linspace(0,5,49)
     # y = np.linspace(0,5,49)
     
 
-    X, Y = np.meshgrid(x, y)
+    [X, Y, Z] = np.meshgrid(x, y, z)
     # Z = f(X, Y)
-    z = depth
     
-    # cont = plt.contour(X, Y, Z, cmap='copper', extend='both' )
+    cont = plt.contourf(X, Y, Z)
 
+    c = plt.imshow(cont, cmap ='copper') 
+    plt.colorbar(c) 
 
-    # c = plt.imshow(cont, cmap ='copper') 
-    # plt.colorbar(c) 
-
-    # plt.show() 
+    plt.show() 
     # plt.colorbar()
     # plt.show()
     # print("FINISHED")
-
-    x = np.unique(x)
-    y = np.unique(y)
-    X, Y = np.meshgrid(x, y, indexing=indexing)
-    Z = np.asarray(z).reshape(X.shape)
-    fig, ax = plt.subplots()
-    p = ax.pcolormesh(X, Y, Z)
-    fig.show()
-    return p, fig, ax
 
 
 
@@ -79,7 +69,7 @@ def main():
         output = str(input("Would you like to print the outputs? (Y/N) : ")).upper()
     # Goes through your directory to find files
     # directory = 'Sidescans/'
-    directory = 'JSF-Processing/Sidescans'
+    directory = 'Sidescans'
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
             with open(os.path.join(directory, filename), 'rb') as f:
