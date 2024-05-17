@@ -39,18 +39,27 @@ def graph(long, lat, depth):
     # y = np.linspace(lat)
     x = long
     y = lat
-    z = depth
+    z = np.array(depth)
     # x = np.linspace(0,5,49)
     # y = np.linspace(0,5,49)
     
+    X, Y = np.meshgrid(x, y)
+    # Z = np.sin(X) + np.cos(Y)
+    # Z = z
 
-    [X, Y, Z] = np.meshgrid(x, y, z)
+
+    # [X, Y] = np.meshgrid(x, y)
+    [X, Z] = np.meshgrid(x,z)
     # Z = f(X, Y)
-    
-    cont = plt.contourf(X, Y, Z)
+    fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='2d')
+    # ax.contour3D(X, Y, Z, cmap='copper')
+    # ax.contour(X, Y, Z, cmap='copper')
+    plt.contour(X, Y, Z, cmap='copper')
 
-    c = plt.imshow(cont, cmap ='copper') 
-    plt.colorbar(c) 
+    # c = plt.imshow(cont, cmap ='copper') 
+    # plt.colorbar() 
+    # plt.colorbar(c) 
 
     plt.show() 
     # plt.colorbar()
@@ -85,7 +94,8 @@ def main():
                     f.seek(i)
                     
                     # This takes the data from the file and only gathers the amount that it will to fill the variables
-                    if i < 164051000:
+                    # if i < 164051000:
+                    if i < 64051000:
                         header = f.read(data_struct.size)
 
                         # Takes the data out and assigns it to each variable. This corresponds to the
@@ -109,11 +119,15 @@ def main():
                                 if coordUnits == 1 or coordUnits == 2 or coordUnits == 3 or coordUnits == 4:
                                     # pass
                                     if ID == 1:
+                                        # longitude = round(((longitude / 10000) / 60),3)
+                                        longitude = (longitude / 10000) / 60
+                                        latitude = (latitude / 10000) / 60
                                         if(channel == 1):
                                             side = "Starboard / Right"
-                                            x.append(longitude)
-                                            y.append(latitude)
-                                            z.append(depthMM)
+                                            if subSysNum == 20:
+                                                x.append(longitude)
+                                                y.append(latitude)
+                                                z.append(depthMM)
                                         elif channel == 0:
                                             side = "Port / Left"
                                         else:
@@ -122,7 +136,7 @@ def main():
                                         if(output == 'Y'):
                                             print(f"\n\nMarker:{hex(marker)} MSGTYPE:{messageType} Channel:{channel} Side:{side} ")
                                             print(f"Longitude:{longitude} Latitude:{latitude} coordUnit:{coordUnits} ID:{ID} Depth:{depthMM}")
-                                            print(f"Validity Flag:{bin(validityFlag)}")
+                                            print(f"Validity Flag:{bin(validityFlag)} Sub System Num:{subSysNum} Time:{time}")
                                         # x.append(longitude)
                                         # y.append(latitude)
                                         sensorCount += 1
