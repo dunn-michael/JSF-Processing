@@ -37,16 +37,18 @@ def graph(long, lat):
     # y = np.linspace(lat)
     x = long
     y = lat
+    # x = np.linspace(0,5,49)
+    # y = np.linspace(0,5,49)
     
 
     X, Y = np.meshgrid(x, y)
     Z = f(X, Y)
     
-    plt.contour(X, Y, Z, colors='black');
+    plt.contour( X, Y, Z, colors=['#808080', '#A0A0A0'], extend='both' )
 
-
-
-
+    plt.colorbar()
+    plt.show()
+    print("FINISHED")
 
 
 
@@ -55,7 +57,7 @@ def main():
     x = []
     y = []
     # Goes through your directory to find files
-    directory = 'JSF-Processing/Sidescans/'
+    directory = 'Sidescans/'
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
             with open(os.path.join(directory, filename), 'rb') as f:
