@@ -23,53 +23,21 @@ header_struct = struct.Struct('<HBBHBBBBHi')
 
 # This includes both the header and the data
 data_struct = struct.Struct('HBBHBBBBHiiIIhhHHHhhhhHHhhhhhffhhhhhhhhhhhhfiih\
-                            BBBBBBBBBBBBBBBBBBBBBBBBHIHhhHHHii')
+                            BBBBBBBBBBBBBBBBBBBBBBBBHIHhhHHHiiHHiffhhhhhhhhHhh')
 #  B = uint8 H = uint16 I = uint32 f = float
 #  b = int8 h = int16 i = int 32 f = float
 
 
 
-def f(x, y):
-    # return np.sin(x) ** 10 + np.cos(10 + y * x) * np.cos(x)
-    return np.sin(x) * np.cos(y)
-
-
-def graph(long, lat, depth):
-    # x = np.linspace(long)
-    # y = np.linspace(lat)
-    x = long
-    y = lat
-    z = np.array(depth)
-    # x = np.linspace(0,5,49)
-    # y = np.linspace(0,5,49)
-    
-    X, Y = np.meshgrid(x, y)
-    # Z = np.sin(X) + np.cos(Y)
-    # Z = z
-
-
-    # [X, Y] = np.meshgrid(x, y)
-    [X, Z] = np.meshgrid(x,z)
-    # Z = f(X, Y)
-    fig = plt.figure()
-    # ax = fig.add_subplot(111, projection='2d')
-    # ax.contour3D(X, Y, Z, cmap='copper')
-    # ax.contour(X, Y, Z, cmap='copper')
-    plt.contour(X, Y, Z, cmap='copper')
-
-    # c = plt.imshow(cont, cmap ='copper') 
-    # plt.colorbar() 
-    # plt.colorbar(c) 
-
-    plt.show() 
-    # plt.colorbar()
-    # plt.show()
-    # print("FINISHED")
+def graph():
+    pass
 
 
 
 
 def main():
+    binCounter = 0
+    binList = []
     x = []
     y = []
     z = []
@@ -78,7 +46,7 @@ def main():
         output = str(input("Would you like to print the outputs? (Y/N) : ")).upper()
     # Goes through your directory to find files
     # directory = 'Sidescans/'
-    directory = 'Sidescans'
+    directory = 'JSF-Processing/Sidescans/'
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
             with open(os.path.join(directory, filename), 'rb') as f:
@@ -95,7 +63,8 @@ def main():
                     
                     # This takes the data from the file and only gathers the amount that it will to fill the variables
                     # if i < 164051000:
-                    if i < 64051000:
+                    # if i < 64051000:
+                    if i < 14051000:
                         header = f.read(data_struct.size)
 
                         # Takes the data out and assigns it to each variable. This corresponds to the
@@ -109,7 +78,9 @@ def main():
                         annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, \
                         annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, \
                         annotStr, annotStr, annotStr, annotStr, annotStr, annotStr, samples, sampInterv, gainFact,\
-                        transmitLevel, reserved21, startTransmitPulFreq, endTransmitPulFreq, sweepLen, press, depthMM= data_struct.unpack(header)
+                        transmitLevel, reserved21, startTransmitPulFreq, endTransmitPulFreq, sweepLen, press, depthMM, sampleFreq,\
+                        outgoingPulseID, AltitudeMM, soundSpeedMpS, mixerFreq, year, day, hour, minute, second, timeBasis,\
+                        weightFactor, numberOfPulses, compassHeading, pitch, roll= data_struct.unpack(header)
 
                         # Every set of data should start with decimal 5633 (0x1601 hex)
                         if(marker == 5633):
@@ -125,24 +96,28 @@ def main():
                                         if(channel == 1):
                                             side = "Starboard / Right"
                                             if subSysNum == 20:
-                                                x.append(longitude)
-                                                y.append(latitude)
-                                                z.append(depthMM)
+                                                binCounter += 1
+                                                binList.append(binCounter)
+                                            #     x.append()
+                                            #     y.append()
+                                            #     z.append()
                                         elif channel == 0:
                                             side = "Port / Left"
                                         else:
                                             side = "INVALID"
                                         # This is just here for testing so I can see the values. Later this will be a graph
                                         if(output == 'Y'):
-                                            print(f"\n\nMarker:{hex(marker)} MSGTYPE:{messageType} Channel:{channel} Side:{side} ")
+                                            print(f"\n\nMarker:{hex(marker)} MSGTYPE:{messageType} Channel:{channel} Side:{side}")
                                             print(f"Longitude:{longitude} Latitude:{latitude} coordUnit:{coordUnits} ID:{ID} Depth:{depthMM}")
                                             print(f"Validity Flag:{bin(validityFlag)} Sub System Num:{subSysNum} Time:{time}")
-                                        # x.append(longitude)
-                                        # y.append(latitude)
+                                            print(f"Number of Pulses:{numberOfPulses} Weighting Factor:{weightFactor}")
+                                            print(f"Pitch:{(pitch * 2**(-weightFactor))}")
+                                            print(f"Roll:{(roll * 2**(-weightFactor))}")
+                                            print(f"Compass:{(compassHeading * 2**(-weightFactor))}")
                                         sensorCount += 1
                     else:
                         print(f"Total Sensor Measurements : {sensorCount}")
-                        graph(x,y,z)
+                        # graph(x,y,z)
                         break
     f.close()
 
