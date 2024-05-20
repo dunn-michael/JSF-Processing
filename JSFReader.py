@@ -1,26 +1,6 @@
 import struct
 import os
 
-
-
-# %matplotlib inline
-import matplotlib.pyplot as plt
-# plt.style.use('seaborn-white')
-import numpy as np
-
-
-
-# define the header structure
-# header_struct = struct.Struct('<HBBHBBBBHi')
-
-
-# define the ping structure
-# ping_struct = struct.Struct('<IIfiiiihhhhhhhhh')
-
-# This is the data struct that shows almost every variable we will need. For this to work you will need to add the
-# corresponding missing variables down below where the struct is being unpacked
-# data_struct = struct.Struct('lLLhhHHHhhhhHHhhhhhffhhhhhhhhhhhhfllhBBBBBBBBBBBBBBBBBBBBBBBBHLHhhHHHllHHlffhhhhhh')
-
 # This includes both the header and the data
 data_struct = struct.Struct('HBBHBBBBHiiIIhhHHHhhhhHHhhhhhffhhhhhhhhhhhhfiih\
                             BBBBBBBBBBBBBBBBBBBBBBBBHIHhhHHHiiHHiffhhhhhhhhHhh')
@@ -51,8 +31,8 @@ def main():
             with open(os.path.join(directory, filename), 'rb') as f:
                 sensorCount = 0
                 # read the header
-                test = f.read()
-                for i in range(len(test)):
+                length = f.read()
+                for i in range(len(length)):
 
                     # This is here for testing to speed up tests
                     # f.seek(0 + i * data_struct.size)
@@ -98,7 +78,9 @@ def main():
                                             if subSysNum == 20:
                                                 binCounter += 1
                                                 binList.append(binCounter)
-                                            #     x.append()
+                                                x.append(longitude)
+                                                if(len(x) >= 200):
+                                                    break
                                             #     y.append()
                                             #     z.append()
                                         elif channel == 0:
