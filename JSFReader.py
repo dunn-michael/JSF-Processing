@@ -61,9 +61,9 @@ def main():
                     f.seek(i)
                     
                     # This takes the data from the file and only gathers the amount that it will to fill the variables
-                    # if i < 164051000:
+                    if i < 164051000:
                     # if i < 64051000:
-                    if i < 14051000:
+                    # if i < 14051000:
                         header = f.read(data_struct.size)
                         # header = f.read(NMEA_struct.size)
 
