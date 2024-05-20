@@ -82,11 +82,6 @@ def main():
                         outgoingPulseID, AltitudeMM, soundSpeedMpS, mixerFreq, year, day, hour, minute, second, timeBasis,\
                         weightFactor, numberOfPulses, compassHeading, pitch, roll= data_struct.unpack(header)
 
-
-                        # marker, protocalVersion, sessionID, messageType, cmdType, subSysNum, channel, \
-                        # seqNum, reserved, msgSize, time, Ms, source, reserved, reserved1, reserved2, NMEA1, \
-                        # NMEA2, NMEA3, NMEA4, NMEA5, NMEA6, NMEA7, NMEA8, NMEA9, NMEA10, NMEA11, NMEA12 = NMEA_struct.unpack(header)
-
                         # Every set of data should start with decimal 5633 (0x1601 hex)
                         if(marker == 5633):
 
