@@ -70,6 +70,11 @@ def main():
                                 if coordUnits == 1 or coordUnits == 2 or coordUnits == 3 or coordUnits == 4:
                                     # pass
                                     if ID == 1:
+                                        if(dataFormat != 0):
+                                            print(False)
+                                            break
+                                        if i > 2000:
+                                            break
                                         # longitude = round(((longitude / 10000) / 60),3)
                                         longitude = (longitude / 10000) / 60
                                         latitude = (latitude / 10000) / 60
@@ -79,8 +84,8 @@ def main():
                                                 binCounter += 1
                                                 binList.append(binCounter)
                                                 x.append(longitude)
-                                                if(len(x) >= 200):
-                                                    break
+                                                # if(len(x) >= 2):
+                                                #     break
                                             #     y.append()
                                             #     z.append()
                                         elif channel == 0:
@@ -97,8 +102,14 @@ def main():
                                             # print(f"Roll:{(roll * 2**(-weightFactor))}")
                                             # print(f"Compass:{(compassHeading * 2**(-weightFactor))}")
                                             # print(f"Protocal Version:{protocalVersion}")
-                                            print(f"marker:{marker}, protocalVersion:{protocalVersion}, sessionID:{sessionID}, messageType:{messageType}, cmdType:{cmdType}, subSysNum:{subSysNum}, channel:{channel}, seqNum:{seqNum}, reserved:{reserved}, msgSize:{msgSize}")
+                                            print(f"marker:{hex(marker)}, protocalVersion:{protocalVersion}, sessionID:{sessionID}, messageType:{messageType}, cmdType:{cmdType}, subSysNum:{subSysNum}, channel:{channel}, seqNum:{seqNum}, reserved:{reserved}, msgSize:{msgSize}")
                                             print(f"Data Format:{dataFormat}")
+                                            print(hex(length[1]) + hex(length[0]))
+                                            print(length[3] + length[4])
+                                            print(length[4])
+                                            print(f"i:{i}")
+                                            print(f"Message Length:{msgSize}")
+                                            print(f"message Length 2 : {(length[i + 12] + length[i+13] + length[i+14]+length[i+15]) * 8}")
                                         sensorCount += 1
                     else:
                         print(f"Total Sensor Measurements : {sensorCount}")
