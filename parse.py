@@ -11,7 +11,9 @@ header_struct = struct.Struct('<HBBHBBBBHi')
 finishedList = []
 
 echoIntensitiesL = []
-img = []
+echoIntensitiesR = []
+imgL = []
+imgR = []
 
 i = 0
 count = 0
@@ -43,29 +45,55 @@ for filename in os.listdir(directory):
                             # i = prediction
                             # count +=1
 
-                            if(messageType == 80) and channel == 0 and subSysNum == 20:
-                                echoIntensitiesL = []
+                            if(messageType == 80) and subSysNum == 20:
                                 account += 1
+                                if channel == 0:
+                                    j = i + 240 + 16
+                                    echoIntensitiesL = []
+                                    while j <= prediction:
+                                        try: 
+                                            val = struct.unpack('<h', data[j:j+2])[0]
+                                            j += 2
+                                            if val * 15 >= 24881:
+                                                val = 24881
+                                            else:
+                                                val *= 15
+                                            echoIntensitiesL.append(val)
+                                        except:
+                                            break
+                                if channel == 1:
+                                    j = i + 240 + 16
+                                    echoIntensitiesR = []
+                                    while j <= prediction:
+                                        try: 
+                                            val = struct.unpack('<h', data[j:j+2])[0]
+                                            j += 2
+                                            if val * 15 >= 24881:
+                                                val = 24881
+                                            else:
+                                                val *= 15
+                                            echoIntensitiesR.append(val)
+                                        except:
+                                            break
                                 msgCounter = 0
                                 dataPoint = 0
-                                j = i + 240 + 16
                                 # k = msgSize - 240 - 16
-                                while j <= prediction:
-                                    try: 
-                                        val = struct.unpack('<h', data[j:j+2])[0]
-                                        # if val > 0:
-                                        #     print(j, val)
-                                        j += 2
-                                        # if val == 0:
-                                            # val +=?
-                                        # val +=2
-                                        if val * 15 >= 24881:
-                                            val = 24881
-                                        else:
-                                            val *= 15
-                                        echoIntensitiesL.append(val)
-                                    except:
-                                        break
+                                # while j <= prediction:
+                                #     try: 
+                                #         val = struct.unpack('<h', data[j:j+2])[0]
+                                #         # if val > 0:
+                                #         #     print(j, val)
+                                #         j += 2
+                                #         # if val == 0:
+                                #             # val +=?
+                                #         # val +=2
+                                #         if val * 15 >= 24881:
+                                #             val = 24881
+                                #         else:
+                                #             val *= 15
+                                #         echoIntensitiesL.append(val)
+                                #     except:
+                                #         break
                                     # while msgCounter <= 16:
                                     #     dataPoint = dataPoint + data[j + msgCounter]
                                     #     msgCounter += 1
@@ -76,7 +104,8 @@ for filename in os.listdir(directory):
                                     # j += 16
                             i = prediction
                             count += 1
-                            img.append(echoIntensitiesL)
+                            imgL.append(echoIntensitiesL)
+                            imgR.append(echoIntensitiesR)
 
 
             print(f"finished file : {filename}")
@@ -86,15 +115,29 @@ for filename in os.listdir(directory):
             print(np.unique(echoIntensitiesL))
             f.close()
         break
+plt.subplot(1,2,1)
 imgnew = []
-for thing in img:
+for thing in imgL:
     if len(thing) == 7801:
         imgnew.append(thing)
 plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
+plt.title("Port")
+# splitup = filename.split(".")
+# filename = splitup[0] + "_PORT_L" + ".png"
+# plt.savefig(filename)
+# plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='copper')
+# plt.show()
+
+plt.subplot(1,2,2)
+imgnew = []
+for thing in imgR:
+    if len(thing) == 7801:
+        imgnew.append(thing)
+plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
+plt.title("Startboard")
 splitup = filename.split(".")
-filename = splitup[0] + "_PORT_L" + ".png"
+# filename = splitup[0] + "_PORT_R" + ".png"
+filename = splitup[0] + ".png"
 plt.savefig(filename)
 # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='copper')
 plt.show()
-# print(f"\n\nTotal Count : {count}")
-# print(f"Finished List : {finishedList}")
