@@ -3,6 +3,8 @@ from struct import *
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
+import tkinter
+from tkinter import filedialog
 
 
 
@@ -19,6 +21,10 @@ count = 0
 directory = 'JSF-Processing/Sidescans/'
 prediction = 0
 account = 0
+tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
+
+directory = filedialog.askdirectory()
+print(directory)
 for filename in os.listdir(directory):
     if filename.endswith('.JSF'):
         prediction = 0
