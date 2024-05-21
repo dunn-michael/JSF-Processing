@@ -21,10 +21,11 @@ count = 0
 directory = 'JSF-Processing/Sidescans/'
 prediction = 0
 account = 0
-tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
 
+# OPTIONAL CAN ISNTEAD USE THE NORMAL DIRECTORY VARIABLE
+tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
 directory = filedialog.askdirectory()
-print(directory)
+
 for filename in os.listdir(directory):
     if filename.endswith('.JSF'):
         prediction = 0
