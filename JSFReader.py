@@ -60,10 +60,12 @@ for filename in os.listdir(directory):
                                         try: 
                                             val = struct.unpack('<h', data[j:j+2])[0]
                                             j += 2
-                                            if val * 15 >= 24881:
+                                            if val * 15 >= 28881:
+                                            # if val * 15 >= 20000:
                                                 val = 24881
+                                                # pass
                                             else:
-                                                val *= 15
+                                                val *= 15 
                                             echoIntensitiesL.append(val)
                                         except:
                                             break
@@ -101,15 +103,16 @@ imgnew = []
 for thing in imgL:
     if len(thing) == 7801:
         imgnew.append(thing)
-plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
-plt.title("Port")
+plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 8, vmax = 24881)
+# plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 0, vmax = 24881)
+# plt.title("Port")
 plt.subplot(1,2,2)
 imgnew = []
 for thing in imgR:
     if len(thing) == 7801:
         imgnew.append(thing)
-plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
-plt.title("Startboard")
+plt.imshow(np.fliplr((np.array(imgnew)).T),cmap='pink', vmin= 500, vmax = 24881)
+# plt.title("Startboard")
 splitup = filename.split(".")
 # filename = splitup[0] + "_PORT_R" + ".png"
 filename = splitup[0] + ".png"
