@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tkinter
 from tkinter import filedialog
-
+from tkinter import *
 
 
 header_struct = struct.Struct('<HBBHBBBBHi')
@@ -103,7 +103,7 @@ imgnew = []
 for thing in imgL:
     if len(thing) == 7801:
         imgnew.append(thing)
-plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 8, vmax = 24881)
+plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 500, vmax = 24881)
 # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 0, vmax = 24881)
 # plt.title("Port")
 plt.subplot(1,2,2)
