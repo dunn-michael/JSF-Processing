@@ -76,31 +76,6 @@ for filename in os.listdir(directory):
                                             break
                                 msgCounter = 0
                                 dataPoint = 0
-                                # k = msgSize - 240 - 16
-                                # while j <= prediction:
-                                #     try: 
-                                #         val = struct.unpack('<h', data[j:j+2])[0]
-                                #         # if val > 0:
-                                #         #     print(j, val)
-                                #         j += 2
-                                #         # if val == 0:
-                                #             # val +=?
-                                #         # val +=2
-                                #         if val * 15 >= 24881:
-                                #             val = 24881
-                                #         else:
-                                #             val *= 15
-                                #         echoIntensitiesL.append(val)
-                                #     except:
-                                #         break
-                                    # while msgCounter <= 16:
-                                    #     dataPoint = dataPoint + data[j + msgCounter]
-                                    #     msgCounter += 1
-                                    # if(dataPoint != 0):
-                                    #     print(f"Data point : {dataPoint}")
-                                    #     break
-                                    # echoIntensitiesL.append(dataPoint)
-                                    # j += 16
                             i = prediction
                             count += 1
                             imgL.append(echoIntensitiesL)
@@ -121,12 +96,6 @@ for thing in imgL:
         imgnew.append(thing)
 plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
 plt.title("Port")
-# splitup = filename.split(".")
-# filename = splitup[0] + "_PORT_L" + ".png"
-# plt.savefig(filename)
-# plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='copper')
-# plt.show()
-
 plt.subplot(1,2,2)
 imgnew = []
 for thing in imgR:
@@ -138,5 +107,4 @@ splitup = filename.split(".")
 # filename = splitup[0] + "_PORT_R" + ".png"
 filename = splitup[0] + ".png"
 plt.savefig(filename)
-# plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='copper')
 plt.show()
