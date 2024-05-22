@@ -120,12 +120,3 @@ splitup = filename.split(".")
 filename = splitup[0] + ".png"
 plt.savefig(filename)
 plt.show()
-
-
-
-# TODO
-# Maybe add percentages for the procesing section
-# So that its not either multiplied or not but instead
-# Sections that are darker get multiplied by a larger amount
-# than sections that are already bright
-# Hopefully this will help to see more detail
