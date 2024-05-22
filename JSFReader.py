@@ -22,9 +22,11 @@ directory = 'JSF-Processing/Sidescans/'
 prediction = 0
 account = 0
 
+# TODO
+# UNCOMMENT LATER
 # OPTIONAL CAN ISNTEAD USE THE NORMAL DIRECTORY VARIABLE
-tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
-directory = filedialog.askdirectory()
+# tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
+# directory = filedialog.askdirectory()
 
 for filename in os.listdir(directory):
     if filename.endswith('.JSF'):
@@ -105,14 +107,14 @@ for thing in imgL:
         imgnew.append(thing)
 plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 500, vmax = 24881)
 # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 0, vmax = 24881)
-# plt.title("Port")
+plt.title("Port")
 plt.subplot(1,2,2)
 imgnew = []
 for thing in imgR:
     if len(thing) == 7801:
         imgnew.append(thing)
 plt.imshow(np.fliplr((np.array(imgnew)).T),cmap='pink', vmin= 500, vmax = 24881)
-# plt.title("Startboard")
+plt.title("Startboard")
 splitup = filename.split(".")
 # filename = splitup[0] + "_PORT_R" + ".png"
 filename = splitup[0] + ".png"
