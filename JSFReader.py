@@ -3,18 +3,21 @@ from struct import *
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
-import tkinter
 from tkinter import filedialog
 from tkinter import *
-
-
+import math
 
 def setupGraph(listName, channel):
     imgnew = []
     for thing in listName:
+        # print(len(thing))
         if len(thing) == 7801:
             imgnew.append(thing)
-    plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink', vmin= 500, vmax = 24881)
+    array = np.array(imgnew)
+    # print(array[1])
+    
+    plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
+    # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
     plt.title(channel)
 
 def main():
@@ -26,12 +29,17 @@ def main():
     echoIntensitiesR = []
     imgL = []
     imgR = []
+    img = []
 
     i = 0
     count = 0
-    directory = 'JSF-Processing/Sidescans/'
+    directory = 'Sidescans/'
     account = 0
-        
+    
+    # This is the absorption coefficient use for TVG
+    # alpha = 4.9
+    alpha = 4
+
     # TODO
     # UNCOMMENT LATER
     # OPTIONAL CAN ISNTEAD USE THE NORMAL DIRECTORY VARIABLE
@@ -113,13 +121,30 @@ def main():
                                         # at the next message
                                         while j <= prediction:
                                             try: 
+                                            
                                                 val = struct.unpack('<h', data[j:j+2])[0]
+
                                                 j += 2
-                                                if val * 15 >= 28881:
-                                                    val = 24881
-                                                else:
-                                                    val *= 15 
+                                                # if val != 0:
+                                                #     if val <= 24881 *.5:
+                                                #         alpha = 100
+                                                #     if val <= 24881 *.10:
+                                                #         alpha = 10
+                                                #     if val <= 24881 *.25:
+                                                #         alpha = 4
+                                                #     elif val <= 24881 * .5:
+                                                #         alpha = 3
+                                                #     elif val <= 24881 * .75:
+                                                #         alpha = 2.5
+                                                #     elif val <= 24881 * .90:
+                                                #         alpha = 2
+                                                #     else:
+                                                #         alpha = 1.5
+
+                                                if val != 0:
+                                                    val = 40 * math.log(val) + alpha * val
                                                 echoIntensitiesL.append(val)
+     
                                             except:
                                                 break
 
@@ -131,10 +156,8 @@ def main():
                                             try: 
                                                 val = struct.unpack('<h', data[j:j+2])[0]
                                                 j += 2
-                                                if val * 15 >= 24881:
-                                                    val = 24881
-                                                else:
-                                                    val *= 15
+                                                if val != 0:
+                                                    val = 40 * math.log(val) + alpha * val
                                                 echoIntensitiesR.append(val)
                                             except:
                                                 break
@@ -144,7 +167,7 @@ def main():
                                 # we can move onto the next message.
                                 i = prediction
 
-                                # Count is ihe variable used to show how many headers we are sorting through
+                                # Count is the variable used to show how many headers we are sorting through
                                 count += 1
                                 imgL.append(echoIntensitiesL)
                                 imgR.append(echoIntensitiesR)
@@ -155,18 +178,21 @@ def main():
                 print(f"Count : {count}")
                 print(f"Msg 80 count: {account}")
                 f.close()
+                                # print(np.unique(echoIntensitiesL))
             break
-
-
+    # for i in range(len(imgR)):
+    #     img.append(imgR[i])
+    #     img.append(imgL[i])
     plt.subplot(1,2,1)
     setupGraph(imgL, "Port")
     plt.subplot(1,2,2)
     setupGraph(imgR, "Starboard")
+    # setupGraph(img, "Both?")
 
 
     splitup = filename.split(".")
     filename = splitup[0] + ".png"
-    plt.savefig(filename)
+    # plt.savefig(filename)
 
     plt.show()
 
