@@ -17,7 +17,7 @@ def setupGraph(listName, channel):
     array = np.array(imgnew)
     # print(array[1])
     
-    plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
+    plt.imshow(((array).T), cmap='pink', vmin= 0, vmax = 24881)
     # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
     plt.title(channel)
 
@@ -161,9 +161,9 @@ def main():
 
                                 # Count is the variable used to show how many headers we are sorting through
                                 count += 1
-                                imgL.append(echoIntensitiesL)
-                                echoIntensitiesRev = list(reversed(echoIntensitiesR))
-                                imgR.append(echoIntensitiesRev)
+                                echoIntensitiesRev = list(reversed(echoIntensitiesL))
+                                imgL.append(echoIntensitiesRev)
+                                imgR.append(echoIntensitiesR)
                                 # img.append(echoIntensitiesL)
                                 # img.append(echoIntensitiesL)
                                 # print(type(echoIntensitiesR))
@@ -192,7 +192,7 @@ def main():
     img = [[] for _ in range(len(imgL))]
 
     for i in range(len(imgL)):
-        img[i] = imgR[i] + imgL[i]
+        img[i] = imgL[i] + imgR[i]
 
     setupGraph(img, "Both?")
     splitup = filename.split(".")
