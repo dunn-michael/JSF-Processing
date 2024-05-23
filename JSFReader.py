@@ -10,7 +10,7 @@ import math
 def setupGraph(listName, channel):
     imgnew = []
     for thing in listName:
-        # print(len(thing))
+        print(len(thing))
         if len(thing) == 7801:
             imgnew.append(thing)
     array = np.array(imgnew)
@@ -140,9 +140,11 @@ def main():
                                                 #         alpha = 2
                                                 #     else:
                                                 #         alpha = 1.5
-
+                                                # val = math.log((1 + 2 * val) / 2**2)
+                                                val = val / 2**(2-1)
                                                 if val != 0:
-                                                    val = 40 * math.log(val) + alpha * val
+                                                    alpha = 4.9
+                                                    val = 40 * math.log10(val) + alpha * val
                                                 echoIntensitiesL.append(val)
      
                                             except:
@@ -157,7 +159,7 @@ def main():
                                                 val = struct.unpack('<h', data[j:j+2])[0]
                                                 j += 2
                                                 if val != 0:
-                                                    val = 40 * math.log(val) + alpha * val
+                                                    val = 40 * math.log10(val) + alpha * val
                                                 echoIntensitiesR.append(val)
                                             except:
                                                 break
