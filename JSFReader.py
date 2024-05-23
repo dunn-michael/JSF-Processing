@@ -10,8 +10,9 @@ import math
 def setupGraph(listName, channel):
     imgnew = []
     for thing in listName:
-        print(len(thing))
-        if len(thing) == 7801:
+        # print(len(thing))
+        if len(thing) == 15602:
+        # if len(thing) == 7801:
             imgnew.append(thing)
     array = np.array(imgnew)
     # print(array[1])
@@ -38,7 +39,8 @@ def main():
     
     # This is the absorption coefficient use for TVG
     # alpha = 4.9
-    alpha = 4
+    alpha = 6
+    # alpha = 
 
     # TODO
     # UNCOMMENT LATER
@@ -125,28 +127,10 @@ def main():
                                                 val = struct.unpack('<h', data[j:j+2])[0]
 
                                                 j += 2
-                                                # if val != 0:
-                                                #     if val <= 24881 *.5:
-                                                #         alpha = 100
-                                                #     if val <= 24881 *.10:
-                                                #         alpha = 10
-                                                #     if val <= 24881 *.25:
-                                                #         alpha = 4
-                                                #     elif val <= 24881 * .5:
-                                                #         alpha = 3
-                                                #     elif val <= 24881 * .75:
-                                                #         alpha = 2.5
-                                                #     elif val <= 24881 * .90:
-                                                #         alpha = 2
-                                                #     else:
-                                                #         alpha = 1.5
-                                                # val = math.log((1 + 2 * val) / 2**2)
-                                                val = val / 2**(2-1)
-                                                if val != 0:
-                                                    alpha = 4.9
-                                                    val = 40 * math.log10(val) + alpha * val
-                                                echoIntensitiesL.append(val)
-     
+                                                val = val / 2
+                                                val = 40 * math.log10(val + 1) + alpha * val
+                                                # val = math.sqrt( (val / 2)**2)
+                                                echoIntensitiesL.append(val)     
                                             except:
                                                 break
 
@@ -158,8 +142,14 @@ def main():
                                             try: 
                                                 val = struct.unpack('<h', data[j:j+2])[0]
                                                 j += 2
-                                                if val != 0:
-                                                    val = 40 * math.log10(val) + alpha * val
+                                                val = val / 2
+                                                val = 40 * math.log10(val + 1) + alpha * val
+                                                # h = (struct.unpack('<i', data[i:i+4])[0]) * 10 **(-3)
+                                                # print(f"h:{h}")
+                                                # val = math.sqrt( (val / 2)**2 - (h)**2 )
+                                                # val = math.sqrt( (val / 2)**2)
+                                                # print(f"val : {val}")
+
                                                 echoIntensitiesR.append(val)
                                             except:
                                                 break
@@ -172,9 +162,18 @@ def main():
                                 # Count is the variable used to show how many headers we are sorting through
                                 count += 1
                                 imgL.append(echoIntensitiesL)
-                                imgR.append(echoIntensitiesR)
-
-
+                                echoIntensitiesRev = list(reversed(echoIntensitiesR))
+                                imgR.append(echoIntensitiesRev)
+                                # img.append(echoIntensitiesL)
+                                # img.append(echoIntensitiesL)
+                                # print(type(echoIntensitiesR))
+                                # img.append(echoIntensitiesRev)
+                                # print("test")
+                            
+                                # print(echoIntensitiesR.revers
+                # for i in range(len(img)):
+                #     for val in img[i]:
+                #         val *= -1
                 print(f"finished file : {filename}")
                 finishedList.append(filename)
                 print(f"Count : {count}")
@@ -182,16 +181,20 @@ def main():
                 f.close()
                                 # print(np.unique(echoIntensitiesL))
             break
-    # for i in range(len(imgR)):
-    #     img.append(imgR[i])
-    #     img.append(imgL[i])
-    plt.subplot(1,2,1)
-    setupGraph(imgL, "Port")
-    plt.subplot(1,2,2)
-    setupGraph(imgR, "Starboard")
-    # setupGraph(img, "Both?")
 
+    print(len(imgL))
+    print(len(imgR))
 
+    # plt.subplot(1,2,1)
+    # setupGraph(imgL, "Port")
+    # plt.subplot(1,2,2)
+    # setupGraph(imgR, "Starboard")
+    img = [[] for _ in range(len(imgL))]
+
+    for i in range(len(imgL)):
+        img[i] = imgR[i] + imgL[i]
+
+    setupGraph(img, "Both?")
     splitup = filename.split(".")
     filename = splitup[0] + ".png"
     # plt.savefig(filename)
