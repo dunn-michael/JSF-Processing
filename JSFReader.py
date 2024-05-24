@@ -10,15 +10,13 @@ import math
 def setupGraph(listName, channel):
     imgnew = []
     for thing in listName:
-        # print(len(thing))
         if len(thing) == 15602:
+            # Value if graphing single graphs instead of combined
         # if len(thing) == 7801:
             imgnew.append(thing)
     array = np.array(imgnew)
-    # print(array[1])
     
-    plt.imshow(((array).T), cmap='pink', vmin= 0, vmax = 24881)
-    # plt.imshow(np.fliplr((np.array(imgnew)).T), cmap='pink')
+    plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
     plt.title(channel)
 
 def main():
@@ -39,7 +37,7 @@ def main():
     
     # This is the absorption coefficient use for TVG
     # alpha = 4.9
-    alpha = 6
+    alpha = 7.5
     # alpha = 
 
     # TODO
@@ -161,40 +159,23 @@ def main():
 
                                 # Count is the variable used to show how many headers we are sorting through
                                 count += 1
-                                echoIntensitiesRev = list(reversed(echoIntensitiesL))
-                                imgL.append(echoIntensitiesRev)
-                                imgR.append(echoIntensitiesR)
-                                # img.append(echoIntensitiesL)
-                                # img.append(echoIntensitiesL)
-                                # print(type(echoIntensitiesR))
-                                # img.append(echoIntensitiesRev)
-                                # print("test")
+                                echoIntensitiesRev = list(reversed(echoIntensitiesR))
+                                imgL.append(echoIntensitiesL)
+                                imgR.append(echoIntensitiesRev)
                             
-                                # print(echoIntensitiesR.revers
-                # for i in range(len(img)):
-                #     for val in img[i]:
-                #         val *= -1
                 print(f"finished file : {filename}")
                 finishedList.append(filename)
                 print(f"Count : {count}")
                 print(f"Msg 80 count: {account}")
                 f.close()
-                                # print(np.unique(echoIntensitiesL))
             break
 
-    print(len(imgL))
-    print(len(imgR))
-
-    # plt.subplot(1,2,1)
-    # setupGraph(imgL, "Port")
-    # plt.subplot(1,2,2)
-    # setupGraph(imgR, "Starboard")
     img = [[] for _ in range(len(imgL))]
 
     for i in range(len(imgL)):
-        img[i] = imgL[i] + imgR[i]
+        img[i] = imgR[i] + imgL[i]
 
-    setupGraph(img, "Both?")
+    setupGraph(img, "")
     splitup = filename.split(".")
     filename = splitup[0] + ".png"
     # plt.savefig(filename)
