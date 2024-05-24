@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from tkinter import filedialog
 from tkinter import *
 import math
+# from histManipulation import *
 
 def setupGraph(listName, channel):
     imgnew = []
@@ -16,8 +17,19 @@ def setupGraph(listName, channel):
             imgnew.append(thing)
     array = np.array(imgnew)
     
+    # array = equalize_histogram(array, "gaussian")
+    plt.title("Sonar map")
+    plt.subplot(3,1,1)
     plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
+    plt.title("Graph of single swath")
+    plt.subplot(3,1,2)
+    plt.plot(array[1])
+    plt.title("Histogram")
+    plt.subplot(3,1,3)
+    plt.hist(array[1], bins=200, color='skyblue', edgecolor='black')
     plt.title(channel)
+    # equ
+
 
 def main():
     
@@ -49,6 +61,13 @@ def main():
     # Looks at your directory and finds .JSF files to open and parset through the data
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
+            echoIntensitiesL = []
+            echoIntensitiesR = []
+            imgL = []
+            imgR = []
+            img = []
+            
+
 
             # Prediction value is used to read the message length add 16 bits for the length
             # of the header then add it to the i value to skip over information we dont' need
@@ -121,7 +140,7 @@ def main():
                                         # at the next message
                                         while j <= prediction:
                                             try: 
-                                            
+                                                # alpha = 7.5
                                                 val = struct.unpack('<h', data[j:j+2])[0]
 
                                                 j += 2
@@ -132,26 +151,33 @@ def main():
                                             except:
                                                 break
 
-                                    # Channel 1 represents the startboard side of the vessel
+                                    # Channel 1 represents the starboard side of the vessel
                                     if channel == 1:
                                         j = i + 240 + 16
+                                        # h = (struct.unpack('<i', data[i+136:i+136+4])[0])
+                                        # depth = (struct.unpack('<i', data[i+136+16:i+16+136+4])[0]) * 10 **(-3)
+                                        # validityFlag = (struct.unpack('<H', data[i+30+16:i+16+30+2])[0])
+                                        h = (struct.unpack('<i', data[i+144+16:i+16+144+4])[0]) * 10 ** -3
                                         echoIntensitiesR = []
                                         while j <= prediction:
                                             try: 
                                                 val = struct.unpack('<h', data[j:j+2])[0]
                                                 j += 2
-                                                val = val / 2
-                                                val = 40 * math.log10(val + 1) + alpha * val
-                                                # h = (struct.unpack('<i', data[i:i+4])[0]) * 10 **(-3)
-                                                # print(f"h:{h}")
+                                                # val = val / 2
+                                                # alpha = 4
+                                                # val = 40 * math.log10(val + 1) + alpha * val
+                                                # print(val)
                                                 # val = math.sqrt( (val / 2)**2 - (h)**2 )
+                                                # val = math.sqrt(((val / 2) ** 2) - ((h)**2))
+                                                # if (val/2) **2 > h**2:
+                                                    # val = math.sqrt((val / 2) ** 2) - ((h)**2)
                                                 # val = math.sqrt( (val / 2)**2)
-                                                # print(f"val : {val}")
+                                                # if(val <= 0):
+                                                    # print(f"val : {val}")
 
                                                 echoIntensitiesR.append(val)
                                             except:
                                                 break
-                            
                                 # Set the index to the next prediction value so that
                                 # once we are done getting the echo intensity information
                                 # we can move onto the next message.
@@ -168,17 +194,26 @@ def main():
                 print(f"Count : {count}")
                 print(f"Msg 80 count: {account}")
                 f.close()
+
+                # testing
+                img = [[] for _ in range(len(imgL))]
+
+                for i in range(len(imgR)):
+                        alpha = 10
+                        for j in range(len(imgR[i])):
+                            if j <= 5000:
+                                # imgR[i][j] = alpha * imgR[i][j]
+                                imgR[i][j] = 40 * math.log10(imgR[i][j] + 1) + alpha * imgR[i][j]
+                for i in range(len(imgL)):
+                    img[i] = imgR[i] + imgL[i]
+
+                setupGraph(img, "")
+                splitup = filename.split(".")
+                filename = splitup[0] + ".png"
+                # plt.savefig(filename)
+            # Comment out to go through all files
             break
 
-    img = [[] for _ in range(len(imgL))]
-
-    for i in range(len(imgL)):
-        img[i] = imgR[i] + imgL[i]
-
-    setupGraph(img, "")
-    splitup = filename.split(".")
-    filename = splitup[0] + ".png"
-    # plt.savefig(filename)
 
     plt.show()
 
