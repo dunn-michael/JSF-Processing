@@ -181,9 +181,12 @@ def file_reader():
                                     if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0:
                                         imgL.append(echoIntensitiesL)
                                         imgR.append(echoIntensitiesRev)
-                                        info.append([latitude, longitude,heading,0,imgL[-1]])
+                                        # print(len(echoIntensitiesL))
+                                        # info.append([latitude, longitude,heading,0,echoIntensitiesL])
+                                        info.append([latitude, longitude,heading,0] + echoIntensitiesL)
+                                        # print(len(info[-1][4]))
                                         # data.append([latitude,longitude,1, imgR[-1]])
-                                        info.append([latitude,longitude,heading,1,imgR[-1]])
+                                        # info.append([latitude,longitude,heading,1,echoIntensitiesRev])
                                     skip = False
                                 # totalL.append(echoIntensitiesL)
                                 # totalR.append(echoIntensitiesRev)
@@ -222,7 +225,7 @@ def sort_data():
     currentLong = 0
     starboard = False
     skip = False
-    with open('graph-data.csv', 'r') as csvFile:
+    with open('graph-data.csv', mode='r', newline='') as csvFile:
         csvreader = csv.reader(csvFile)
         header = next(csvreader)
         for row in csvreader:
@@ -231,9 +234,9 @@ def sort_data():
             if currentLat == prevLat and currentLong == prevLong:
                 port = False
                 starboard = False
-                if row[2] == 0:
+                if row[3] == 0:
                     port = True
-                if row[2] == 1:
+                if row[3] == 1:
                     starboard == True
                 if starboard and port:
                     skip = True
@@ -243,21 +246,23 @@ def sort_data():
                     starboard = False
                     port = False
             if not skip:
-                info.append(row[4])
+                # if(row[3] == 1):
+                    # print(row[3])
+                info.append(row[4:])
         csvFile.close()
     print("---=Finished Sorting=---")
     return info
 
 
 def setupGraph(listName):
+    print("---=Graphing=---")
     imgnew = []
     for thing in listName:
         # print(len(thing))
-        if len(thing) == 15602:
+        # if len(thing) == 15602:
             # Value if graphing single graphs instead of combined
-        # if len(thing) == 7801:
-            # imgnew.append(thing)
-            print(True)
+        if len(thing) == 7801:
+            imgnew.append(thing)
     array = np.array(imgnew)
     
     # array = equalize_histogram(array, "gaussian")
@@ -271,7 +276,7 @@ def setupGraph(listName):
     # plt.subplot(3,1,3)
     # plt.hist(array[1], bins=200, color='skyblue', edgecolor='black')
     # plt.title(channel)
-    # equ
+    print("---=Finished Graphing=---")
 
 
 def main():
