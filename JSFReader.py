@@ -17,7 +17,6 @@ def file_reader():
     header_struct = struct.Struct('<HBBHBBBBHi')
     port = False
     starboard = False
-    directory = 'Sidescans/'
     alpha = 7.5
     i = 0
     echoIntensitiesR = []
@@ -36,8 +35,9 @@ def file_reader():
     longPort = []
     skip = False
 
-    Tk().withdraw() # prevents an empty tkinter window from appearing
-    directory = filedialog.askdirectory()
+    directory = 'Sidescans/'
+    # Tk().withdraw() # prevents an empty tkinter window from appearing
+    # directory = filedialog.askdirectory()
 
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
@@ -271,6 +271,7 @@ def setupGraph(imgList):
     print("---=Graphing=---")
     img = []
     for val in imgList:
+        print(type(val))
         # print(len(val))
         # if len(val) == 15602:
             # Value if graphing single graphs instead of combined
