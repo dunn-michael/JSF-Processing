@@ -192,18 +192,24 @@ def file_reader():
                                 # totalR.append(echoIntensitiesRev)
 
                 f.close()
+    print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
                 # filename = splitup[0] + ".png"
                 # plt.savefig(filename)
             # Comment out to go through all files
             # break
     header = ['Latitude','Longitude', 'Heading', 'Channel', 'Data']
-    with open('graph-data.csv', 'w') as csvFile:
-        csvwriter = csv.writer(csvFile)
-        csvwriter.writerow(header)
-        csvwriter.writerows(info)
-        csvFile.close()
-    print("---=Finished Gathering Data=---")
+    # with open('graph-data.csv', 'w') as csvFile:
+    #     csvwriter = csv.writer(csvFile)
+    #     csvwriter.writerow(header)
+    #     csvwriter.writerows(info)
+    #     csvFile.close()
+    
+    np.save('data', info)
+    # print(info[1][1])
+    print(len(info))
+    print("---=Finshed Saving=---")
+
     # print(f"Length R:{len(totalR)}")
     # print(f"Length L:{len(totalL)}")
     # img = [[] for _ in range(len(imgL))]
@@ -225,31 +231,32 @@ def sort_data():
     currentLong = 0
     starboard = False
     skip = False
-    with open('graph-data.csv', mode='r', newline='') as csvFile:
-        csvreader = csv.reader(csvFile)
-        header = next(csvreader)
-        for row in csvreader:
-            currentLat = row[0]
-            currentLong = row[1]
-            if currentLat == prevLat and currentLong == prevLong:
-                port = False
-                starboard = False
-                if row[3] == 0:
-                    port = True
-                if row[3] == 1:
-                    starboard == True
-                if starboard and port:
-                    skip = True
-                    starboard = False
-                    port = False
-                else:
-                    starboard = False
-                    port = False
-            if not skip:
-                # if(row[3] == 1):
-                    # print(row[3])
-                info.append(row[4:])
-        csvFile.close()
+    # with open('graph-data.csv', mode='r', newline='') as csvFile:
+    #     csvreader = csv.reader(csvFile)
+    #     header = next(csvreader)
+    #     for row in csvreader:
+    #         currentLat = row[0]
+    #         currentLong = row[1]
+    #         if currentLat == prevLat and currentLong == prevLong:
+    #             port = False
+    #             starboard = False
+    #             if row[3] == 0:
+    #                 port = True
+    #             if row[3] == 1:
+    #                 starboard == True
+    #             if starboard and port:
+    #                 skip = True
+    #                 starboard = False
+    #                 port = False
+    #             else:
+    #                 starboard = False
+    #                 port = False
+    #         if not skip:
+    #             # if(row[3] == 1):
+    #                 # print(row[3])
+    #             info.append(row[4:])
+    #     csvFile.close()
+    info = np.load('data.npy')
     print("---=Finished Sorting=---")
     return info
 
@@ -281,10 +288,11 @@ def setupGraph(listName):
 
 def main():
     
-    # file_reader()
+    file_reader()
     img = sort_data()
+    print(len(img))
     # print(same)
-    setupGraph(img)
-    plt.show()
+    # setupGraph(img)
+    # plt.show()
 
 main()

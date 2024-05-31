@@ -3,3 +3,4 @@
 *.TFW
 *.png
 graph-data.csv
+data.npy
