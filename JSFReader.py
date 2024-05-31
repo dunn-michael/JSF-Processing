@@ -30,16 +30,17 @@ def file_reader():
     prevLong = 0
     account = 0
     info = []
+    longStarboard = []
+    latStarboard = []
+    latPort = []
+    longPort = []
     skip = False
+    t = 0
     # tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
     # directory = filedialog.askdirectory()
 
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
-            imgL = []
-            imgR = []            
-
-
             # Prediction value is used to read the message length add 16 bits for the length
             # of the header then add it to the i value to skip over information we dont' need
             # without this we would need to parse through all of the information which drastically
@@ -180,25 +181,25 @@ def file_reader():
                                 if not skip:
                                     echoIntensitiesRev = list(reversed(echoIntensitiesR))
                                     if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0:
-                                        imgL.append(echoIntensitiesL)
-                                        imgR.append(echoIntensitiesRev)
-                                        # print(len(echoIntensitiesL))
-                                        # info.append([latitude, longitude,heading,0,echoIntensitiesL])
-                                        info.append([latitude, longitude,heading,0] + echoIntensitiesL)
-                                        # print(len(info[-1][4]))
-                                        # data.append([latitude,longitude,1, imgR[-1]])
-                                        # info.append([latitude,longitude,heading,1,echoIntensitiesRev])
+                                        if latitude not in latPort and longitude not in longPort:
+                                            longPort.append(longitude)
+                                            latPort.append(latitude)
+                                            info.append([latitude, longitude,heading,0] + echoIntensitiesL)
+                                        if latitude not in latStarboard and longitude not in longStarboard:
+                                            longStarboard.append(longitude)
+                                            latStarboard.append(latitude)
+                                            info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
+
                                     skip = False
-                                # totalL.append(echoIntensitiesL)
-                                # totalR.append(echoIntensitiesRev)
                 print(f"---=Finished {filename}=---")
                 f.close()
+            # Comment out to go through all files
+            # break
     print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
                 # filename = splitup[0] + ".png"
                 # plt.savefig(filename)
-            # Comment out to go through all files
-            # break
+    print("---=Saving Data=---")
     header = ['Latitude','Longitude', 'Heading', 'Channel', 'Data']
     # with open('graph-data.csv', 'w') as csvFile:
     #     csvwriter = csv.writer(csvFile)
@@ -208,7 +209,6 @@ def file_reader():
     
     np.save('data', info)
     # print(info[1][1])
-    print(len(info))
     print("---=Finshed Saving=---")
 
     # print(f"Length R:{len(totalR)}")
@@ -225,7 +225,7 @@ def file_reader():
 
 def sort_data():
     print("---=Sorting=---")
-    info = []
+    unsortedData = []
     prevLat = 0
     prevLong = 0
     currentLat = 0
@@ -255,11 +255,16 @@ def sort_data():
     #         if not skip:
     #             # if(row[3] == 1):
     #                 # print(row[3])
-    #             info.append(row[4:])
+    #             unsortedData.append(row[4:])
     #     csvFile.close()
-    info = np.load('data.npy')
+    unsortedData = np.load('data.npy')
+    # for i in range(len(unsortedData)):
+    #     for i in range(len(unsortedData[i]))
+    # print(unsortedData[105][4])
+    for i in range(len(unsortedData)):
+        sortedData = unsortedData[i][4:]
     print("---=Finished Sorting=---")
-    return info
+    return sortedData.tolist()
 
 
 def setupGraph(listName):
@@ -291,9 +296,7 @@ def main():
     
     file_reader()
     img = sort_data()
-    print(len(img))
-    # print(same)
-    # setupGraph(img)
-    # plt.show()
+    setupGraph(img)
+    plt.show()
 
 main()
