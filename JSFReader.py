@@ -49,6 +49,7 @@ def file_reader():
             # i is the value that I am using to iterate through the data and index values
             i = 0
             with open(os.path.join(directory, filename), 'rb') as f:
+                print(f"---=Starting {filename}=---")
                 data = f.read()
 
                 # If the prediction leads to a value bigger than the length of the data
@@ -190,7 +191,7 @@ def file_reader():
                                     skip = False
                                 # totalL.append(echoIntensitiesL)
                                 # totalR.append(echoIntensitiesRev)
-
+                print(f"---=Finished {filename}=---")
                 f.close()
     print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
