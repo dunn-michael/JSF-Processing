@@ -35,9 +35,9 @@ def file_reader():
     latPort = []
     longPort = []
     skip = False
-    t = 0
-    # tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
-    # directory = filedialog.askdirectory()
+
+    Tk().withdraw() # prevents an empty tkinter window from appearing
+    directory = filedialog.askdirectory()
 
     for filename in os.listdir(directory):
         if filename.endswith('.JSF'):
@@ -267,21 +267,21 @@ def sort_data():
     return sortedData.tolist()
 
 
-def setupGraph(listName):
+def setupGraph(imgList):
     print("---=Graphing=---")
-    imgnew = []
-    for thing in listName:
-        # print(len(thing))
-        # if len(thing) == 15602:
+    img = []
+    for val in imgList:
+        # print(len(val))
+        # if len(val) == 15602:
             # Value if graphing single graphs instead of combined
-        if len(thing) == 7801:
-            imgnew.append(thing)
-    array = np.array(imgnew)
+        if len(val) == 7801:
+            img.append(val)
+    imgArray = np.array(img)
     
     # array = equalize_histogram(array, "gaussian")
     # plt.title("Sonar map")
     # plt.subplot(3,1,1)
-    plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
+    plt.imshow(np.fliplr((imgArray).T), cmap='pink', vmin= 0, vmax = 24881)
     # plt.title("Graph of single swath")
     # plt.subplot(3,1,2)
     # plt.plot(array[1])
