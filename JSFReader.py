@@ -17,6 +17,8 @@ def file_reader():
     header_struct = struct.Struct('<HBBHBBBBHi')
     port = False
     starboard = False
+    portLocation = []
+    starboardLocation = []
     alpha = 7.5
     i = 0
     echoIntensitiesR = []
@@ -115,6 +117,7 @@ def file_reader():
                                         skip = False
                                     prevLat = currentLat
                                     prevLong = currentLong
+                                    location = [longitude, latitude]
                                     # account is being incremented to count the amount of
                                     # acoustic information we are parsing through
                                     account += 1
@@ -181,20 +184,19 @@ def file_reader():
                                 if not skip:
                                     echoIntensitiesRev = list(reversed(echoIntensitiesR))
                                     if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0:
-                                        if latitude not in latPort and longitude not in longPort:
-                                            longPort.append(longitude)
-                                            latPort.append(latitude)
-                                            info.append([latitude, longitude,heading,0] + echoIntensitiesL)
-                                        if latitude not in latStarboard and longitude not in longStarboard:
-                                            longStarboard.append(longitude)
-                                            latStarboard.append(latitude)
-                                            info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
+                                        # if location not in portLocation:
+                                        #     portLocation.append(location)
+                                        info.append([location,heading,0] + echoIntensitiesL)
+                                        # if location not in starboardLocation:
+                                        #     starboardLocation.append(location)
+                                        # info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
 
                                     skip = False
                 print(f"---=Finished {filename}=---")
                 f.close()
             # Comment out to go through all files
             # break
+            info = info.sort(key = lambda x: x[1],reverse=True)
     print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
                 # filename = splitup[0] + ".png"
@@ -226,6 +228,8 @@ def file_reader():
 def sort_data():
     print("---=Sorting=---")
     unsortedData = []
+    sortedData = []
+    tempData = []
     prevLat = 0
     prevLong = 0
     currentLat = 0
@@ -262,16 +266,21 @@ def sort_data():
     #     for i in range(len(unsortedData[i]))
     # print(unsortedData[105][4])
     for i in range(len(unsortedData)):
-        sortedData = unsortedData[i][4:]
+        tempData = []
+        for j in range(3, len(unsortedData[i])):
+            tempData.append(unsortedData[i][j])
+        # print(unsortedData[i][4:])
+        sortedData.append(tempData)
     print("---=Finished Sorting=---")
-    return sortedData.tolist()
-
+    return sortedData
 
 def setupGraph(imgList):
     print("---=Graphing=---")
     img = []
     for val in imgList:
-        print(type(val))
+        # val = list(val)
+        # print(val)
+        # print(type(val))
         # print(len(val))
         # if len(val) == 15602:
             # Value if graphing single graphs instead of combined
