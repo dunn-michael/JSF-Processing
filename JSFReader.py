@@ -198,7 +198,7 @@ def file_reader():
                 print(f"---=Finished {filename}=---")
                 f.close()
             # Comment out to go through all files
-            # break
+            break
     # info = sorted(info, key=lambda x: x[2], reverse=True)
     print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
@@ -234,6 +234,8 @@ def sort_data():
     unsortedData = []
     sortedData = []
     tempData = []
+    tempDataL = []
+    tempDataR = []
     prevLat = 0
     prevLong = 0
     currentLat = 0
@@ -271,10 +273,18 @@ def sort_data():
     # print(unsortedData[105][4])
     for i in range(len(unsortedData)):
         tempData = []
-        for j in range(4, len(unsortedData[i])):
-            tempData.append(unsortedData[i][j])
+        if unsortedData[i][3] == 0:
+            for j in range(4, len(unsortedData[i])):
+                tempDataL.append(unsortedData[i][j])
+        if unsortedData[i][3] == 1:
+            for j in range(4, len(unsortedData[i])):
+                tempDataR.append(unsortedData[i][j])
         # print(unsortedData[i][4:])
         sortedData.append(tempData)
+        
+    for i in range(len(tempDataL)):
+        sortedData[i] = tempDataR[i] + tempDataL[i]
+
     print("---=Finished Sorting=---")
     return sortedData
 
