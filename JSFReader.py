@@ -230,7 +230,6 @@ def file_reader():
     # print(f"Total length:{len(imgR[1])}")
 
 def sort_data():
-    print("---=Sorting=---")
     unsortedData = []
     sortedData = []
     tempData = []
@@ -267,10 +266,14 @@ def sort_data():
     #                 # print(row[3])
     #             unsortedData.append(row[4:])
     #     csvFile.close()
+    print("---=Loading Data=---")
     unsortedData = np.load('data.npy')
+    print("---=Finished Loading=---")
     # for i in range(len(unsortedData)):
     #     for i in range(len(unsortedData[i]))
     # print(unsortedData[105][4])
+
+    print("---=Sorting=---")
     for i in range(len(unsortedData)):
         tempData = []
         if unsortedData[i][3] == 0:
@@ -282,6 +285,7 @@ def sort_data():
         # print(unsortedData[i][4:])
         sortedData.append(tempData)
         
+    sortedData = [[] for _ in range(len(tempDataL))]
     for i in range(len(tempDataL)):
         sortedData[i] = tempDataR[i] + tempDataL[i]
 
@@ -317,10 +321,17 @@ def setupGraph(imgList):
 
 
 def main():
-    
-    file_reader()
-    img = sort_data()
-    setupGraph(img)
-    plt.show()
+    read = ''
+    graph = ''
+    while(read != 'y' and read != 'n'):
+        read = input("\nWould you like to read through all the .JSF files? [y/n]: ").lower()
+    while(graph != 'y' and graph != 'n'):
+        graph = input("Would you like graph the data stored in the data.npy file? [y/n]: ").lower()
+    if(read == 'y'):
+        file_reader()
+    if(graph == 'y'):
+        img = sort_data()
+        setupGraph(img)
+        plt.show()
 
 main()
