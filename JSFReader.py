@@ -14,6 +14,7 @@ csv.field_size_limit(sys.maxsize)
 
 def file_reader():
     print("---=Gathering Data=---")
+    print("This may take a little while depending on how many files you have")
     header_struct = struct.Struct('<HBBHBBBBHi')
     port = False
     starboard = False
@@ -205,6 +206,7 @@ def file_reader():
                 # filename = splitup[0] + ".png"
                 # plt.savefig(filename)
     print("---=Saving Data=---")
+    print("This may take a while")
     # header = ['Latitude','Longitude', 'Heading', 'Channel', 'Data']
     # with open('graph-data.csv', 'w') as csvFile:
     #     csvwriter = csv.writer(csvFile)
@@ -274,6 +276,7 @@ def sort_data():
     # print(unsortedData[105][4])
 
     print("---=Sorting=---")
+    print("This may take a while")
     for i in range(len(unsortedData)):
         tempData = []
         if unsortedData[i][3] == 0:
