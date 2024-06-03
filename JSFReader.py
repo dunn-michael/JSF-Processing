@@ -20,7 +20,6 @@ def file_reader():
     portLocation = []
     starboardLocation = []
     alpha = 7.5
-    i = 0
     echoIntensitiesR = []
     echoIntensitiesL = []
     echoIntensitiesRev = []
@@ -184,25 +183,25 @@ def file_reader():
                                 if not skip:
                                     echoIntensitiesRev = list(reversed(echoIntensitiesR))
                                     if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0:
-                                        # if location not in portLocation:
-                                        #     portLocation.append(location)
-                                        info.append([location,heading,0] + echoIntensitiesL)
+                                        if location not in portLocation:
+                                            portLocation.append(location)
+                                            info.append([location,heading,0] + echoIntensitiesL)
                                         # if location not in starboardLocation:
-                                        #     starboardLocation.append(location)
-                                        # info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
+                                            # starboardLocation.append(location)
+                                            # info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
 
                                     skip = False
                 print(f"---=Finished {filename}=---")
                 f.close()
             # Comment out to go through all files
             # break
-            info = info.sort(key = lambda x: x[1],reverse=True)
+    # info = sorted(info, key=lambda x: x[2], reverse=True)
     print("---=Finished Gathering=---")
                 # splitup = filename.split(".")
                 # filename = splitup[0] + ".png"
                 # plt.savefig(filename)
     print("---=Saving Data=---")
-    header = ['Latitude','Longitude', 'Heading', 'Channel', 'Data']
+    # header = ['Latitude','Longitude', 'Heading', 'Channel', 'Data']
     # with open('graph-data.csv', 'w') as csvFile:
     #     csvwriter = csv.writer(csvFile)
     #     csvwriter.writerow(header)
