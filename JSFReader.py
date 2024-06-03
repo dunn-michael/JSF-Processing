@@ -182,13 +182,17 @@ def file_reader():
                                 i = prediction
                                 if not skip:
                                     echoIntensitiesRev = list(reversed(echoIntensitiesR))
-                                    if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0:
-                                        if location not in portLocation:
-                                            portLocation.append(location)
-                                            info.append([location,heading,0] + echoIntensitiesL)
+                                    if len(echoIntensitiesL) != 0 and len(echoIntensitiesRev) != 0 and heading != 0:
+                                        # if location not in portLocation:
+                                            # portLocation.append(location)
+                                        # if(heading == 0):
+                                            # print("Broke")
+                                        if(len(echoIntensitiesL) == 7801):
+                                            info.append([longitude, latitude,heading,0] + echoIntensitiesL)
                                         # if location not in starboardLocation:
                                             # starboardLocation.append(location)
-                                            # info.append([latitude,longitude,heading,1] + echoIntensitiesRev)
+                                        if(len(echoIntensitiesRev) == 7801):
+                                            info.append([longitude, latitude,heading,1] + echoIntensitiesRev)
 
                                     skip = False
                 print(f"---=Finished {filename}=---")
@@ -207,7 +211,8 @@ def file_reader():
     #     csvwriter.writerow(header)
     #     csvwriter.writerows(info)
     #     csvFile.close()
-    
+    # print(len(info))
+    # print(len(info[15]))
     np.save('data', info)
     # print(info[1][1])
     print("---=Finshed Saving=---")
@@ -266,7 +271,7 @@ def sort_data():
     # print(unsortedData[105][4])
     for i in range(len(unsortedData)):
         tempData = []
-        for j in range(3, len(unsortedData[i])):
+        for j in range(4, len(unsortedData[i])):
             tempData.append(unsortedData[i][j])
         # print(unsortedData[i][4:])
         sortedData.append(tempData)
