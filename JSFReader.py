@@ -6,12 +6,15 @@ import matplotlib.pyplot as plt
 from tkinter import filedialog
 from tkinter import *
 import math
-# from histManipulation import *
+
+from PIL import Image
+from io import BytesIO
 
 long = []
 lat = []
 
 def setupGraph(listName, channel):
+    print("Graphing")
     imgnew = []
     for thing in listName:
         if len(thing) == 15602:
@@ -21,21 +24,31 @@ def setupGraph(listName, channel):
     array = np.array(imgnew)
     
     # array = equalize_histogram(array, "gaussian")
-    plt.title("Sonar map")
-    plt.subplot(3,1,1)
+    # plt.title("Sonar map")
+    # plt.subplot(3,1,1)
     plt.imshow(np.fliplr((array).T), cmap='pink', vmin= 0, vmax = 24881)
-    plt.title("Graph of single swath")
-    plt.subplot(3,1,2)
-    plt.plot(array[1])
-    plt.title("Histogram")
-    plt.subplot(3,1,3)
-    plt.hist(array[1], bins=200, color='skyblue', edgecolor='black')
-    plt.title(channel)
+    # plt.title("Graph of single swath")
+    # plt.subplot(3,1,2)
+    # plt.plot(array[1])
+    # plt.title("Histogram")
+    # plt.subplot(3,1,3)
+    # plt.hist(array[1], bins=200, color='skyblue', edgecolor='black')
+    # plt.title(channel)
     # equ
+    png1 = BytesIO()
+    fig.savefig(png1, format='png')
+
+    # (2) load this image into PIL
+    png2 = Image.open(png1)
+
+    # (3) save as TIFF
+    png2.save('3dPlot.tiff')
+    png1.close()
+
 
 
 def main():
-    
+    global fig
     header_struct = struct.Struct('<HBBHBBBBHi')
     finishedList = []
 
@@ -54,7 +67,7 @@ def main():
     # alpha = 4.9
     alpha = 7.5
     # alpha = 
-
+    fig = plt.figure()
     # TODO
     # UNCOMMENT LATER
     # OPTIONAL CAN ISNTEAD USE THE NORMAL DIRECTORY VARIABLE
@@ -174,9 +187,9 @@ def main():
                                                 try: 
                                                     val = struct.unpack('<h', data[j:j+2])[0]
                                                     j += 2
-                                                    # val = val / 2
+                                                    val = val / 2
                                                     # alpha = 4
-                                                    # val = 40 * math.log10(val + 1) + alpha * val
+                                                    val = 40 * math.log10(val + 1) + alpha * val
                                                     # print(val)
                                                     # val = math.sqrt( (val / 2)**2 - (h)**2 )
                                                     # val = math.sqrt(((val / 2) ** 2) - ((h)**2))
@@ -209,12 +222,12 @@ def main():
                 # testing
                 img = [[] for _ in range(len(imgL))]
 
-                for i in range(len(imgR)):
-                        alpha = 10
-                        for j in range(len(imgR[i])):
-                            if j <= 5000:
-                                # imgR[i][j] = alpha * imgR[i][j]
-                                imgR[i][j] = 40 * math.log10(imgR[i][j] + 1) + alpha * imgR[i][j]
+                # for i in range(len(imgR)):
+                #         alpha = 10
+                #         for j in range(len(imgR[i])):
+                #             if j <= 5000:
+                #                 # imgR[i][j] = alpha * imgR[i][j]
+                #                 imgR[i][j] = 40 * math.log10(imgR[i][j] + 1) + alpha * imgR[i][j]
                 for i in range(len(imgL)):
                     img[i] = imgR[i] + imgL[i]
 
