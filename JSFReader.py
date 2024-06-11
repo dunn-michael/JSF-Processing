@@ -7,8 +7,17 @@ from tkinter import filedialog
 from tkinter import *
 import math
 
+
+
 from PIL import Image
 from io import BytesIO
+import rasterio
+import rasterio.features
+import rasterio.warp
+from rasterio.plot import show
+
+
+
 
 long = []
 lat = []
@@ -44,6 +53,25 @@ def setupGraph(listName, channel):
     # (3) save as TIFF
     png2.save('3dPlot.tiff')
     png1.close()
+
+    UAV_image = rasterio.open('3dPlot.Tiff')
+    # print("---=UAV IMAGE=---")
+    # print(UAV_image)
+    # print("---=UAV IMAGE=---")
+    new_tif = rasterio.open('new.Tiff','w',
+                            driver='Gtiff',
+                            height = UAV_image.height,
+                            width = UAV_image.width, 
+                            count = 1,
+                            # crs = UAV_image.crs,
+                            # crs='proj=latlong',
+                            transform = UAV_image.transform, 
+                            dtype = 'uint8')
+
+    show(UAV_image)
+    # new_tif.write(result, 1) #result from calculations
+    UAV_image.close()
+    # new_tif.close()
 
 
 
