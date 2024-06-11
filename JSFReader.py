@@ -8,6 +8,9 @@ from tkinter import *
 import math
 # from histManipulation import *
 
+long = []
+lat = []
+
 def setupGraph(listName, channel):
     imgnew = []
     for thing in listName:
@@ -119,65 +122,73 @@ def main():
                                 # high frequency data we can change the 20 to a 21
                                 if(messageType == 80) and subSysNum == 20:
 
-                                    # account is being incremented to count the amount of
-                                    # acoustic information we are parsing through
-                                    account += 1
+                                    validityFlag = (struct.unpack('<H', data[i+30+16:i+30+16+2])[0])
+                                    first_bit = (validityFlag >> 14) & 1
+                                    if first_bit:
+                                        tempLong = struct.unpack('<i', data[i+80+16:i+80+16+4])[0] / (10000 * 60)
+                                        tempLat= struct.unpack('<i', data[i+84+16:i+84+16+4])[0] / (10000 * 60)
 
-                                    # Channel 0 represents the port side of the vessel
-                                    if channel == 0:
+                                        long.append(tempLong)
+                                        lat.append(tempLat)
+                                        # account is being incremented to count the amount of
+                                        # acoustic information we are parsing through
+                                        account += 1
 
-                                        # j is variable that we are using to index through
-                                        # the echo intensity messages. We can get the size
-                                        # of this by looking at the msgSize variable then adding
-                                        # 240 for all of the information included in the
-                                        # message type 80 message, then we add 16 for the size
-                                        # of the header message
-                                        j = i + 240 + 16
-                                        echoIntensitiesL = []
-                                        
-                                        # j needs to stay less than or equal to the prediction because
-                                        # if j gets larger than the prediction we will begin to look
-                                        # at the next message
-                                        while j <= prediction:
-                                            try: 
-                                                # alpha = 7.5
-                                                val = struct.unpack('<h', data[j:j+2])[0]
+                                        # Channel 0 represents the port side of the vessel
+                                        if channel == 0:
 
-                                                j += 2
-                                                val = val / 2
-                                                val = 40 * math.log10(val + 1) + alpha * val
-                                                # val = math.sqrt( (val / 2)**2)
-                                                echoIntensitiesL.append(val)     
-                                            except:
-                                                break
+                                            # j is variable that we are using to index through
+                                            # the echo intensity messages. We can get the size
+                                            # of this by looking at the msgSize variable then adding
+                                            # 240 for all of the information included in the
+                                            # message type 80 message, then we add 16 for the size
+                                            # of the header message
+                                            j = i + 240 + 16
+                                            echoIntensitiesL = []
+                                            
+                                            # j needs to stay less than or equal to the prediction because
+                                            # if j gets larger than the prediction we will begin to look
+                                            # at the next message
+                                            while j <= prediction:
+                                                try: 
+                                                    # alpha = 7.5
+                                                    val = struct.unpack('<h', data[j:j+2])[0]
 
-                                    # Channel 1 represents the starboard side of the vessel
-                                    if channel == 1:
-                                        j = i + 240 + 16
-                                        # h = (struct.unpack('<i', data[i+136:i+136+4])[0])
-                                        # depth = (struct.unpack('<i', data[i+136+16:i+16+136+4])[0]) * 10 **(-3)
-                                        # validityFlag = (struct.unpack('<H', data[i+30+16:i+16+30+2])[0])
-                                        h = (struct.unpack('<i', data[i+144+16:i+16+144+4])[0]) * 10 ** -3
-                                        echoIntensitiesR = []
-                                        while j <= prediction:
-                                            try: 
-                                                val = struct.unpack('<h', data[j:j+2])[0]
-                                                j += 2
-                                                # val = val / 2
-                                                # alpha = 4
-                                                # val = 40 * math.log10(val + 1) + alpha * val
-                                                # print(val)
-                                                # val = math.sqrt( (val / 2)**2 - (h)**2 )
-                                                # val = math.sqrt(((val / 2) ** 2) - ((h)**2))
-                                                # if (val/2) **2 > h**2:
-                                                    # val = math.sqrt((val / 2) ** 2) - ((h)**2)
-                                                # val = math.sqrt( (val / 2)**2)
-                                                # if(val <= 0):
-                                                    # print(f"val : {val}")
+                                                    j += 2
+                                                    val = val / 2
+                                                    val = 40 * math.log10(val + 1) + alpha * val
+                                                    # val = math.sqrt( (val / 2)**2)
+                                                    echoIntensitiesL.append(val)     
+                                                except:
+                                                    break
 
-                                                echoIntensitiesR.append(val)
-                                            except:
-                                                break
+                                        # Channel 1 represents the starboard side of the vessel
+                                        if channel == 1:
+                                            j = i + 240 + 16
+                                            # h = (struct.unpack('<i', data[i+136:i+136+4])[0])
+                                            # depth = (struct.unpack('<i', data[i+136+16:i+16+136+4])[0]) * 10 **(-3)
+                                            # validityFlag = (struct.unpack('<H', data[i+30+16:i+16+30+2])[0])
+                                            h = (struct.unpack('<i', data[i+144+16:i+16+144+4])[0]) * 10 ** -3
+                                            echoIntensitiesR = []
+                                            while j <= prediction:
+                                                try: 
+                                                    val = struct.unpack('<h', data[j:j+2])[0]
+                                                    j += 2
+                                                    # val = val / 2
+                                                    # alpha = 4
+                                                    # val = 40 * math.log10(val + 1) + alpha * val
+                                                    # print(val)
+                                                    # val = math.sqrt( (val / 2)**2 - (h)**2 )
+                                                    # val = math.sqrt(((val / 2) ** 2) - ((h)**2))
+                                                    # if (val/2) **2 > h**2:
+                                                        # val = math.sqrt((val / 2) ** 2) - ((h)**2)
+                                                    # val = math.sqrt( (val / 2)**2)
+                                                    # if(val <= 0):
+                                                        # print(f"val : {val}")
+
+                                                    echoIntensitiesR.append(val)
+                                                except:
+                                                    break
                                 # Set the index to the next prediction value so that
                                 # once we are done getting the echo intensity information
                                 # we can move onto the next message.
